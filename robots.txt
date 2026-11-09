@@ -1,21 +1,19 @@
 # QuInt — quantizedintelligence.ca
-# AI training and AI scraping crawlers are not permitted on this site.
+# AI TRAINING and bulk-scraping crawlers are not permitted on this site.
+# On-demand fetchers acting for a human user (e.g. a reviewer asking an
+# assistant to read this page) are allowed.
 # Note: this file is honoured voluntarily. The page also carries
 # noai/noimageai robots meta tags.
 
+# ── blocked: training and bulk-scraping crawlers ──
 User-agent: GPTBot
-User-agent: ChatGPT-User
-User-agent: OAI-SearchBot
 User-agent: ClaudeBot
 User-agent: Claude-Web
-User-agent: Claude-User
-User-agent: Claude-SearchBot
 User-agent: anthropic-ai
 User-agent: Google-Extended
 User-agent: Applebot-Extended
 User-agent: CCBot
 User-agent: PerplexityBot
-User-agent: Perplexity-User
 User-agent: Bytespider
 User-agent: Amazonbot
 User-agent: FacebookBot
@@ -30,9 +28,17 @@ User-agent: Timpibot
 User-agent: PanguBot
 User-agent: AI2Bot
 User-agent: ImagesiftBot
+Disallow: /
+
+# ── allowed: user-triggered, on-demand fetchers ──
+User-agent: ChatGPT-User
+User-agent: OAI-SearchBot
+User-agent: Claude-User
+User-agent: Claude-SearchBot
+User-agent: Perplexity-User
 User-agent: DuckAssistBot
 User-agent: MistralAI-User
-Disallow: /
+Allow: /
 
 # Ordinary search engines may index the site.
 User-agent: *
