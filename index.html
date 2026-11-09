@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>QuInt</title>
+<meta name="description" content="QuInt (Quantized Intelligence) puts a self-contained monitoring, assistant and remote-operations unit beside every variable-frequency drive. No cloud. Nothing leaves the plant.">
+<meta name="robots" content="noai, noimageai, noarchive">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a left-anchored column on a 12-step grid; one amber accent for signal
+   and calls to action, steel blue for data, graphite for ink. The recurring
+   motif is a quantised signal: a smooth trace becoming steps. */
+:root {
+  --bg: #F2F4F5;
+  --bg-2: #E8ECEE;
+  --panel: #FFFFFF;
+  --ink: #16202A;
+  --ink-2: #4B5A66;
+  --ink-3: #7C8893;
+  --line: #CDD5DB;
+  --accent: #C96A00;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #F7E4CC;
+  --data: #2C6E8E;
+  --data-soft: #D7E7EF;
+  --ok: #2E7D4F;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11171C; --bg-2: #171F26; --panel: #1C252D; --ink: #EEF2F4; --ink-2: #B4BFC7;
+    --ink-3: #7F8B95; --line: #2E3A44; --accent: #F0A030; --accent-ink: #16202A;
+    --accent-soft: #3A2A12; --data: #6FB3D2; --data-soft: #1D3340; --ok: #6CC391;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11171C; --bg-2: #171F26; --panel: #1C252D; --ink: #EEF2F4; --ink-2: #B4BFC7;
+  --ink-3: #7F8B95; --line: #2E3A44; --accent: #F0A030; --accent-ink: #16202A;
+  --accent-soft: #3A2A12; --data: #6FB3D2; --data-soft: #1D3340; --ok: #6CC391;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--body); font-size: 17px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+img, svg { max-width: 100%; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.1; letter-spacing: -0.01em; }
+h1 { font-size: clamp(2.2rem, 5.2vw, 4.1rem); font-weight: 800; }
+h2 { font-size: clamp(1.7rem, 3.2vw, 2.5rem); font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; }
+.wrap {
+  max-width: 1160px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.eyebrow {
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent); display: inline-flex; align-items: center; gap: 10px;
+}
+.eyebrow::before { content: ""; width: 22px; height: 2px; background: var(--accent); }
+.lede { color: var(--ink-2); font-size: 1.12rem; max-width: 62ch; }
+.muted { color: var(--ink-2); }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+section { padding-block: clamp(56px, 8vw, 110px); }
+section + section { border-top: 1px solid var(--line); }
+.section-head { display: grid; gap: 14px; max-width: 70ch; margin-bottom: clamp(28px, 4vw, 48px); }
+
+/* nav */
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; }
+.brand { display: flex; align-items: baseline; gap: 10px; text-decoration: none; }
+.brand .mark { font-family: var(--display); font-weight: 800; font-size: 1.45rem; letter-spacing: -0.02em; }
+.brand .mark em { font-style: normal; color: var(--accent); }
+.brand .expand { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-3); letter-spacing: 0.08em; text-transform: uppercase; }
+.nav-links { display: flex; gap: 22px; list-style: none; margin: 0; padding: 0; font-size: 0.95rem; font-weight: 500; }
+.nav-links a { text-decoration: none; color: var(--ink-2); }
+.nav-links a:hover { color: var(--ink); }
+.nav .cta { display: none; }
+@media (max-width: 760px) { .nav-links { display: none; } .brand .expand { display: none; } .nav .cta { display: inline-flex; } }
+
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 6px; font-weight: 600; text-decoration: none; font-size: 0.98rem; border: 1px solid transparent; }
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { filter: brightness(1.06); }
+.btn-ghost { border-color: var(--line); color: var(--ink); background: var(--panel); }
+.btn-ghost:hover { border-color: var(--ink-3); }
+
+/* hero */
+.hero { padding-block: clamp(48px, 7vw, 96px) clamp(40px, 6vw, 80px); }
+.hero .wrap { display: grid; grid-template-columns: 1fr; gap: clamp(28px, 5vw, 72px); align-items: center; }
+.hero-copy { display: grid; gap: 22px; min-width: 0; }
+.hero-copy h1 em { font-style: normal; color: var(--accent); }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.hero-facts { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 0.9rem; color: var(--ink-2); margin-top: 6px; }
+.hero-facts span::before { content: "■"; color: var(--accent); font-size: 0.6rem; margin-right: 8px; vertical-align: middle; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+.signal { padding: 18px 18px 14px; display: grid; gap: 12px; }
+.signal-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-family: var(--mono); font-size: 0.74rem; color: var(--ink-3); letter-spacing: 0.06em; text-transform: uppercase; }
+.signal .shot { width: 100%; height: auto; display: block; border-radius: 6px; border: 1px solid var(--line); }
+.live-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(18px, 2.5vw, 28px); }
+.live-wide { grid-column: 1 / -1; }
+.signal .shot-phone { max-width: 320px; margin: 0 auto; }
+@media (max-width: 860px) { .live-grid { grid-template-columns: 1fr; } }
+
+.readings { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.reading { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; display: grid; gap: 2px; min-width: 0; }
+.reading .k { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-3); letter-spacing: 0.06em; text-transform: uppercase; }
+.reading .v { font-family: var(--display); font-weight: 700; font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+.reading .u { font-size: 0.78rem; color: var(--ink-2); }
+.signal-note { font-size: 0.78rem; color: var(--ink-3); }
+@media (max-width: 860px) { .hero .wrap { grid-template-columns: 1fr; } }
+
+/* columns */
+.cols-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 40px); }
+.cols-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 40px); }
+@media (max-width: 860px) { .cols-3, .cols-2 { grid-template-columns: 1fr; } }
+@supports (grid-template-rows: subgrid) {
+  .cols-2 { grid-template-rows: repeat(9, auto); column-gap: clamp(20px, 3vw, 40px); row-gap: 12px; }
+  .cols-2 .shape { grid-template-rows: subgrid; grid-row: span 9; }
+  .cols-2 .shape ul { display: grid; grid-template-rows: subgrid; grid-row: span 7; }
+}
+
+.point { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.point h3 { font-size: 1.2rem; }
+.point p { color: var(--ink-2); }
+.point .tag { font-family: var(--mono); font-size: 0.74rem; color: var(--data); letter-spacing: 0.06em; }
+
+/* product shapes */
+.shape { padding: clamp(22px, 3vw, 34px); display: grid; gap: 18px; align-content: start; }
+.shape header { display: grid; gap: 6px; }
+.pill { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 9px; border-radius: 4px; width: max-content; }
+.pill-accent { background: var(--accent-soft); color: var(--accent); }
+.pill-data { background: var(--data-soft); color: var(--data); }
+.shape ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 9px; color: var(--ink-2); font-size: 0.98rem; }
+.shape li { display: grid; grid-template-columns: 16px 1fr; gap: 10px; align-items: start; }
+.shape li::before { content: ""; width: 8px; height: 8px; margin-top: 9px; border-radius: 2px; background: var(--accent); }
+.shape.alt li::before { background: var(--data); }
+.shape .fine { font-size: 0.86rem; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 12px; }
+
+/* diagram */
+.diagram { overflow-x: auto; padding: 8px 0; }
+.diagram svg { display: block; width: 100%; min-width: 680px; height: auto; font-family: var(--body); }
+.diagram .box { fill: var(--panel); stroke: var(--line); stroke-width: 1.2; }
+.diagram .box-edge { fill: var(--bg-2); stroke: var(--accent); stroke-width: 1.8; }
+.diagram .box-srv { fill: var(--bg-2); stroke: var(--data); stroke-dasharray: 6 4; stroke-width: 1.4; }
+.diagram .t { fill: var(--ink); font-size: 14px; font-weight: 600; }
+.diagram .s { fill: var(--ink-2); font-size: 11.5px; }
+.diagram .flow { stroke: var(--accent); stroke-width: 1.8; fill: none; }
+.diagram .flow-d { stroke: var(--data); stroke-width: 1.6; fill: none; stroke-dasharray: 5 4; }
+.diagram .lbl { fill: var(--accent); font-size: 10.5px; font-family: var(--mono); font-weight: 500; }
+.diagram .lbl-d { fill: var(--data); font-size: 10.5px; font-family: var(--mono); font-weight: 500; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 26px; font-size: 0.86rem; color: var(--ink-2); margin-top: 12px; }
+.legend span::before { content: ""; display: inline-block; width: 18px; height: 0; border-top: 2px solid var(--accent); margin-right: 8px; vertical-align: middle; }
+.legend span.d::before { border-top-style: dashed; border-color: var(--data); }
+
+/* capabilities */
+.caps-group { display: grid; gap: 14px; }
+.caps-group + .caps-group { margin-top: clamp(22px, 3vw, 34px); }
+.caps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.cap { background: var(--panel); padding: 22px 20px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.cap h3 { font-size: 1.05rem; }
+.cap p { color: var(--ink-2); font-size: 0.94rem; }
+.cap .ref { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-3); }
+.trust { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(28px, 5vw, 72px); }
+@media (max-width: 860px) { .trust { grid-template-columns: 1fr; } }
+.rules { display: grid; border-top: 1px solid var(--line); align-content: start; }
+.rule { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.rule b { font-weight: 600; }
+.rule span { color: var(--ink-2); font-size: 0.95rem; }
+@media (max-width: 520px) { .rule { grid-template-columns: 1fr; gap: 4px; } }
+
+@media (max-width: 1000px) { .caps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .caps { grid-template-columns: 1fr; } }
+
+/* proof */
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(18px, 2.5vw, 28px); }
+@media (max-width: 860px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .stats { grid-template-columns: 1fr; } }
+.stat { border-top: 2px solid var(--accent); padding-top: 14px; display: grid; gap: 6px; min-width: 0; }
+.stat .n { font-family: var(--display); font-weight: 800; font-size: clamp(1.9rem, 3.4vw, 2.6rem); font-variant-numeric: tabular-nums; line-height: 1; letter-spacing: -0.02em; }
+.stat .n small { font-size: 0.5em; font-weight: 700; color: var(--ink-2); margin-left: 4px; }
+.stat .l { font-weight: 600; }
+.stat .d { color: var(--ink-2); font-size: 0.9rem; }
+.proof-note { margin-top: 28px; font-size: 0.9rem; color: var(--ink-3); max-width: 70ch; }
+
+/* siemens */
+.siemens-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(18px, 2.5vw, 28px); }
+@media (max-width: 860px) { .siemens-grid { grid-template-columns: 1fr; } }
+.pillar { padding: 22px; display: grid; gap: 10px; align-content: start; }
+.pillar .pill { width: max-content; }
+.pillar p { color: var(--ink-2); font-size: 0.96rem; }
+.roadmap { margin-top: clamp(28px, 4vw, 44px); overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 0.95rem; }
+th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+th { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); font-weight: 500; }
+td:first-child { font-weight: 600; white-space: nowrap; }
+td { color: var(--ink-2); }
+.status { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.06em; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+.status.now { background: color-mix(in srgb, var(--ok) 18%, transparent); color: var(--ok); }
+.status.next { background: var(--accent-soft); color: var(--accent); }
+.status.with { background: var(--data-soft); color: var(--data); }
+
+/* name */
+.name-block { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+@media (max-width: 860px) { .name-block { grid-template-columns: 1fr; } }
+.name-block .big { font-family: var(--display); font-weight: 800; font-size: clamp(3rem, 8vw, 6rem); line-height: 0.95; letter-spacing: -0.03em; }
+.name-block .big em { font-style: normal; color: var(--accent); }
+.name-block .big small { display: block; font-family: var(--mono); font-weight: 400; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin-top: 14px; }
+.name-block p { color: var(--ink-2); }
+
+/* contact */
+.contact { background: var(--bg-2); }
+.contact .wrap { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(28px, 5vw, 72px); align-items: start; }
+@media (max-width: 860px) { .contact .wrap { grid-template-columns: 1fr; } }
+.contact-card { padding: 24px; display: grid; gap: 14px; }
+.contact-card .row { display: grid; gap: 2px; }
+.contact-card .row .k { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+.contact-card .row .v { font-weight: 500; word-break: break-word; }
+.contact-card .row .v a { color: var(--data); }
+footer { border-top: 1px solid var(--line); padding-block: 26px; font-size: 0.85rem; color: var(--ink-3); }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; }
+</style>
+</head>
+<body>
+
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="QuInt home">
+      <span class="mark">Qu<em>Int</em></span>
+      <span class="expand">Quantized Intelligence</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#live">See it</a></li>
+      <li><a href="#product">Product</a></li>
+      <li><a href="#siemens">Siemens for Startups</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a class="btn btn-primary cta" href="#contact">Contact</a>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-copy">
+      <span class="eyebrow">Industrial edge intelligence</span>
+      <h1>The drive's own engineer, <em>on the drive.</em></h1>
+      <p class="lede">QuInt turns a palm-sized unit beside any variable-frequency drive into a live dashboard, an assistant that answers from the vendor manuals, and a signed remote-operations agent.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#how">See how it works</a>
+        <a class="btn btn-ghost" href="#contact">Talk to us</a>
+      </div>
+      <div class="hero-facts">
+        <span>Modbus RTU and TCP</span>
+        <span>Local language model</span>
+        <span>Bluetooth LE to phones</span>
+        <span>Network independent</span>
+      </div>
+    </div>
+      </div>
+</section>
+
+<section id="name">
+  <div class="wrap">
+    <div class="name-block">
+      <div class="big">Qu<em>Int</em><small>Quantized Intelligence</small></div>
+    <div style="display:grid;gap:14px">
+      <p>The models are quantized so they run on the unit beside the machine instead of in a data centre. The intelligence is quantized too: the smallest unit that still works on its own, one per drive.</p>
+      <p>Each unit is complete. A fleet is a set of them that have agreed to share.</p>
+    </div>
+    </div>
+    <div id="product" style="margin-top: clamp(40px, 6vw, 72px)">
+      <div class="section-head">
+        <span class="eyebrow">Product</span>
+      </div>
+      <div class="cols-2">
+      <div class="panel shape">
+        <header>
+          <span class="pill pill-accent">Standalone · the product</span>
+          <h3>QuInt Edge</h3>
+          <p class="muted">A palm-sized unit in the cabinet. Everything below runs on it.</p>
+        </header>
+        <ul>
+          <li>Live dashboard of every configured register, with sparklines and per-register detail</li>
+          <li>Assistant grounded in the vendor manuals, with page citations, on a local 1.5B to 3B model</li>
+          <li>Alarm catalogue extracted from the troubleshooting guide</li>
+          <li>Parameter changes through a request, approve, publish, acknowledge workflow with full history</li>
+          <li>Signed service restarts, reboot and shutdown, with a separate operator passphrase for power actions</li>
+          <li>Readings, alerts and the assistant on a phone over Bluetooth LE, no Wi-Fi needed</li>
+          <li>Local history with CSV export, users, roles, 15 built-in permissions and an audit trail</li>
+        </ul>
+        <p class="fine">Fits in the cabinet, powered from a standard supply. Keeps working with the network down.</p>
+      </div>
+      <div class="panel shape alt">
+        <header>
+          <span class="pill pill-data">Add-on · optional</span>
+          <h3>QuInt Fleet</h3>
+          <p class="muted">A PC on your site that serves many units. Unlink a unit and it keeps everything local.</p>
+        </header>
+        <ul>
+          <li>Fleet-wide history in a lakehouse: hot store for the live view, Parquet and Iceberg for the archive</li>
+          <li>Self-serve reports and charts over the whole fleet</li>
+          <li>Anomaly detection scored in the stream, before any database sees the row</li>
+          <li>Central user directory and vendor manuals pushed to every unit hourly</li>
+          <li>One operations page for every device, with heartbeat every 30 seconds</li>
+          <li>Larger 7B to 14B model, GPU optional, for questions over history</li>
+          <li>Telemetry queued on the unit through an outage and delivered on reconnect</li>
+        </ul>
+        <p class="fine">Runs on your hardware, on your network. Still no cloud.</p>
+      </div>
+    </div>
+      <h2 style="margin-top: clamp(28px, 4vw, 48px); font-size: clamp(1.25rem, 2.55vw, 1.95rem)">One unit per drive, many units per fleet, and all the data you need.</h2>
+    </div>
+  </div>
+</section>
+
+<section id="problem">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Why it exists</span>
+      <h2>Drives know a great deal and tell almost nobody.</h2>
+      <p class="lede">Every drive in a plant holds hundreds of readings and a fault table in a manual nobody has to hand. Most monitoring products answer that with a cloud subscription, which many plants cannot connect to and many operators will not trust.</p>
+    </div>
+    <div class="cols-3">
+      <div class="point">
+        <span class="tag">Fault at 02:40</span>
+        <h3>A code on a screen is not an explanation</h3>
+        <p>QuInt reads the vendor's own manual and answers "what is this alarm and what do I check" with the page it came from, in the control room or at the cabinet.</p>
+      </div>
+      <div class="point">
+        <span class="tag">Hundreds of readings, one tiny display</span>
+        <h3>Telemetry locked in the cabinet</h3>
+        <p>The unit talks to the drive directly and shows every reading live, on a screen or a phone. No PLC change, no gateway licence, no integrator visit.</p>
+      </div>
+      <div class="point">
+        <span class="tag">Air-gapped by policy</span>
+        <h3>Cloud IoT needs a cloud</h3>
+        <p>Many sites have no outbound connection by design. QuInt is standalone first: the dashboard, the model, the history and the approvals all live on the unit. A fleet server is added later, if ever.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">How it works</span>
+      <h2>Readings in, answers out, nothing leaves the site.</h2>
+      <p class="lede">The unit polls the drive directly and serves everything on site. Commands to a drive are signed and short-lived, changes go through an approval gate, and every action is recorded.</p>
+    </div>
+    <div class="diagram">
+      <svg viewBox="0 0 1100 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="diag-title">
+        <title id="diag-title">QuInt at a glance: the drive, the QuInt Edge unit, a browser and a phone, with an optional fleet server</title>
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"/></marker>
+          <marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--data)"/></marker>
+        </defs>
+
+        <rect class="box" x="30" y="110" width="170" height="90" rx="8"/>
+        <text class="t" x="115" y="150" text-anchor="middle">VFD</text>
+        <text class="s" x="115" y="170" text-anchor="middle">any Modbus-capable drive</text>
+
+        <rect class="box-edge" x="300" y="50" width="380" height="210" rx="10"/>
+        <text class="t" x="326" y="86">QuInt Edge unit</text>
+        <text class="s" x="326" y="118">Live dashboard and history</text>
+        <text class="s" x="326" y="140">Assistant with the vendor manual</text>
+        <text class="s" x="326" y="162">Approvals and signed operations</text>
+        <text class="s" x="326" y="184">Alerts, users, audit trail</text>
+        <text class="s" x="326" y="216" font-style="italic">Everything stays on this unit.</text>
+
+        <path class="flow" d="M200 155 H300" marker-end="url(#ah)"/>
+        <text class="lbl" x="250" y="145" text-anchor="middle">polls the drive</text>
+
+        <rect class="box" x="810" y="60" width="170" height="74" rx="8"/>
+        <text class="t" x="895" y="92" text-anchor="middle">Browser</text>
+        <text class="s" x="895" y="112" text-anchor="middle">on the site network</text>
+        <path class="flow" d="M680 100 H810" marker-end="url(#ah)"/>
+
+        <rect class="box" x="810" y="170" width="170" height="74" rx="8"/>
+        <text class="t" x="895" y="202" text-anchor="middle">Phone</text>
+        <text class="s" x="895" y="222" text-anchor="middle">Bluetooth · no Wi-Fi</text>
+        <path class="flow" d="M680 207 H810" marker-end="url(#ah)"/>
+
+        <rect class="box-srv" x="300" y="295" width="680" height="54" rx="8"/>
+        <text class="t" x="326" y="318">QuInt Fleet server · optional</text>
+        <text class="s" x="326" y="337">fleet history, reports, anomaly alerts, central users — linked per unit, unlinked without losing anything</text>
+        <path class="flow-d" d="M490 260 V295" marker-end="url(#ad)"/>
+        <text class="lbl-d" x="504" y="283">optional link</text>
+      </svg>
+    </div>
+    <div class="legend">
+      <span>On the unit, on your site</span>
+      <span class="d">Optional link to the fleet server</span>
+    </div>
+  </div>
+</section>
+
+<section id="live">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">See it running</span>
+      <h2>Three screens, one unit, nothing staged.</h2>
+      <p class="lede">Unretouched screen recordings of the interfaces as shipped, driven by a bench run against a simulated drive and a simulated Bluetooth pairing. On an installed unit the same screens show your drive.</p>
+    </div>
+    <div class="live-grid">
+      <div class="panel signal live-wide">
+        <div class="signal-head"><span>Live dashboard · device pi-1</span><span>60 s window</span></div>
+        <video class="shot" autoplay muted loop playsinline preload="metadata" poster="live-view.png" width="1180" height="524" aria-label="Screen recording of the live dashboard: six parameter cards with readings and sparklines updating every second">
+          <source src="live-view.mp4" type="video/mp4">
+          <source src="live-view.webm" type="video/webm">
+          <img src="live-view.png" alt="Screen recording of the live dashboard: six parameter cards with readings and sparklines updating every second">
+        </video>
+        <p class="signal-note">A browser on the site network: six parameters polled every second, with trends, sparklines and the anomaly bar.</p>
+      </div>
+      <div class="panel signal">
+        <div class="signal-head"><span>Phone browser</span><span>same dashboard</span></div>
+        <video class="shot shot-phone" autoplay muted loop playsinline preload="metadata" poster="live-phone.png" width="390" height="780" aria-label="Screen recording of the same dashboard on a phone, cards stacked in one column and updating live">
+          <source src="live-phone.mp4" type="video/mp4">
+          <source src="live-phone.webm" type="video/webm">
+          <img src="live-phone.png" alt="Screen recording of the same dashboard on a phone, cards stacked in one column and updating live">
+        </video>
+        <p class="signal-note">The same dashboard at phone width. One page, nothing to install.</p>
+      </div>
+      <div class="panel signal">
+        <div class="signal-head"><span>Bluetooth at the cabinet</span><span>no Wi-Fi</span></div>
+        <video class="shot shot-phone" autoplay muted loop playsinline preload="metadata" poster="live-ble.png" width="390" height="780" aria-label="Screen recording of the Bluetooth client on a phone: connected to the unit, live readings arriving once a second">
+          <source src="live-ble.mp4" type="video/mp4">
+          <source src="live-ble.webm" type="video/webm">
+          <img src="live-ble.png" alt="Screen recording of the Bluetooth client on a phone: connected to the unit, live readings arriving once a second">
+        </video>
+        <p class="signal-note">The Bluetooth client, paired straight to the unit's radio: live readings and alerts with no network at all.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="capabilities">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Capabilities</span>
+      <h2>Built for the people who stand next to the machine.</h2>
+    </div>
+    <div class="caps-group">
+      <span class="pill pill-accent">Standalone · on every unit</span>
+      <div class="caps">
+      <div class="cap"><span class="ref">dashboard</span><h3>Live view</h3><p>Every configured reading, live, with trends and detail. A newly approved reading shows up on the next cycle.</p></div>
+      <div class="cap"><span class="ref">assistant · manual</span><h3>Answers with citations</h3><p>Ask about a fault code and get the vendor's own answer, with the manual page it came from. What the manual does not cover is declined, not improvised.</p></div>
+      <div class="cap"><span class="ref">assistant · deploy</span><h3>Change by asking</h3><p>Describe a new reading in plain language and the assistant drafts the change. It still goes through the same approval gate as the form.</p></div>
+      <div class="cap"><span class="ref">approvals</span><h3>Approval gate</h3><p>Every change to a live drive has a requester, an approver and a record. Exemptions are recorded, never silent.</p></div>
+      <div class="cap"><span class="ref">ops</span><h3>Remote operations</h3><p>Restart, reboot or shut down from a page. Commands are signed and expire quickly; power actions need a separate operator-held key, and never bypass the machine's own safety circuits.</p></div>
+      <div class="cap"><span class="ref">ble</span><h3>Phone beside the drive</h3><p>Readings, alerts and the assistant on a phone over Bluetooth, standing at the cabinet. No Wi-Fi needed.</p></div>
+      <div class="cap"><span class="ref">research</span><h3>Two-person knowledge</h3><p>New reference material for the assistant is proposed by one person and verified by another before it ships. Its provenance travels inside the document.</p></div>
+      <div class="cap"><span class="ref">audit</span><h3>Audit trail</h3><p>Every recorded action, filterable and exportable. The export is itself audited.</p></div>
+      <div class="cap"><span class="ref">history</span><h3>History on the unit</h3><p>Readings are kept on the unit itself, charted over any span, and exported as CSV. Raw and rolled-up retention are both settable.</p></div>
+      </div>
+    </div>
+    <div class="caps-group">
+      <span class="pill pill-data">Fleet server · optional</span>
+      <div class="caps">
+      <div class="cap"><span class="ref">fleet · history</span><h3>Fleet history and reports</h3><p>Every linked unit's readings in one place, with self-serve charts over any span.</p></div>
+      <div class="cap"><span class="ref">fleet · alerts</span><h3>Anomaly alerts</h3><p>Readings scored as they arrive, across the fleet. Alerts land on the dashboard and the phone.</p></div>
+      <div class="cap"><span class="ref">fleet · ops</span><h3>One page for the fleet</h3><p>Status, service control and power actions for every device, with a heartbeat from each.</p></div>
+      <div class="cap"><span class="ref">fleet · users</span><h3>Central users and manuals</h3><p>One user directory and one manual library, pushed to every unit. Local accounts survive every sync.</p></div>
+      <div class="cap"><span class="ref">fleet · assistant</span><h3>Questions over history</h3><p>A larger on-site model answers questions over the fleet's history, read-only. Still no cloud.</p></div>
+      <div class="cap"><span class="ref">fleet · sync</span><h3>Through outages</h3><p>A linked unit keeps working and keeps its readings when the server is away, and delivers them when the link returns.</p></div>
+      <div class="cap"><span class="ref">fleet · audit</span><h3>Fleet-wide audit</h3><p>Every unit's audit records are mirrored to the server, so one query answers who changed what across the whole fleet.</p></div>
+      <div class="cap"><span class="ref">fleet · keys</span><h3>Fleet-wide key rotation</h3><p>The server's operations key is delivered to every unit, and each unit reports which key it actually holds, so a rollout shows what is true.</p></div>
+      <div class="cap"><span class="ref">fleet · notes</span><h3>Notes shared across sites</h3><p>Troubleshooting notes written beside one drive sync through the server to every unit, so the next site starts from what the last one learned.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="trust">
+  <div class="wrap trust">
+    <div class="section-head" style="margin-bottom:0">
+      <span class="eyebrow">Security posture</span>
+      <h2>Designed for plants that cannot and will not use a cloud.</h2>
+      <p class="lede">The security model is in signatures, approvals and the record, and every piece of it is tested.</p>
+    </div>
+    <div class="rules">
+      <div class="rule"><b>Nothing leaves the site</b><span>Telemetry, manuals, the model and its answers stay on your network. There is no vendor cloud to breach, subscribe to, or lose.</span></div>
+      <div class="rule"><b>Commands are signed</b><span>Commands to a drive carry signatures and expire quickly. Power actions need a second, operator-held key.</span></div>
+      <div class="rule"><b>Approvals are the rule</b><span>Every change has a requester, an approver and a record. An exemption is itself a recorded decision, never a silent bypass.</span></div>
+      <div class="rule"><b>Fail closed</b><span>A unit that cannot verify a command refuses it with an error rather than acting on it.</span></div>
+      <div class="rule"><b>Separate duties</b><span>Changing what a drive measures and changing what the assistant knows are separate permissions. A site can trust different people with each.</span></div>
+      <div class="rule"><b>Everything on the record</b><span>Every action lands in an audit trail you can filter and export: who asked, who approved, what the device acknowledged.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="siemens">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Siemens for Startups</span>
+      <h2>Why we are applying, and what we would build with the program.</h2>
+      <p class="lede">Siemens drives are the most common thing QuInt will sit next to. The program's three pillars map directly onto our next three steps.</p>
+    </div>
+    <div class="siemens-grid">
+      <div class="panel pillar">
+        <span class="pill pill-accent">Connect</span>
+        <h3>SINAMICS first</h3>
+        <p>QuInt speaks Modbus today. We want to validate SINAMICS G-series support with Siemens engineers so a unit ships with that knowledge built in.</p>
+      </div>
+      <div class="panel pillar">
+        <span class="pill pill-accent">Collaborate</span>
+        <h3>Siemens Xcelerator Marketplace</h3>
+        <p>A per-drive unit with no cloud dependency is a natural companion to a drive sale. We want to list QuInt Edge where Siemens customers already buy.</p>
+      </div>
+      <div class="panel pillar">
+        <span class="pill pill-accent">Empower</span>
+        <h3>Industrial Edge packaging</h3>
+        <p>QuInt is built so it packages cleanly for new targets. With the program's tooling we would bring it to Siemens Industrial Edge devices as well.</p>
+      </div>
+    </div>
+    <div class="roadmap">
+      <table>
+        <thead><tr><th scope="col">Milestone</th><th scope="col">Status</th><th scope="col">What it means</th></tr></thead>
+        <tbody>
+          <tr><td>Standalone unit</td><td><span class="status now">Built and tested</span></td><td>Tested standalone, fleet-linked, and through a deliberate server outage.</td></tr>
+          <tr><td>Fleet server with history and reports</td><td><span class="status now">Built and tested</span></td><td>One on-site server for many units.</td></tr>
+          <tr><td>Manual knowledge, two major drive families</td><td><span class="status now">Built and tested</span></td><td>Alarm catalogues and protocol support, benchmarked.</td></tr>
+          <tr><td>SINAMICS support</td><td><span class="status next">Next</span></td><td>Built from Siemens documentation, with the program's support.</td></tr>
+          <tr><td>PROFINET and OPC UA</td><td><span class="status with">With Siemens</span></td><td>Beyond Modbus, for drives and controllers on the Siemens fieldbus.</td></tr>
+          <tr><td>Industrial Edge app and Marketplace listing</td><td><span class="status with">With Siemens</span></td><td>Packaging, certification and a go-to-market channel.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <div class="section-head" style="margin-bottom:0">
+      <span class="eyebrow">Contact</span>
+      <h2>Talk to us about a pilot.</h2>
+      <p class="lede">A pilot is one unit beside one drive. It needs a power socket, a network address and the drive's manual. We ship the rest.</p>
+    </div>
+    <div class="panel contact-card">
+      <div class="row"><span class="k">Founder</span><span class="v">Sandip Sidhu</span></div>
+      <div class="row"><span class="k">Email</span><span class="v"><a href="mailto:hello@quantizedintelligence.ca">hello@quantizedintelligence.ca</a></span></div>
+      <div class="row"><span class="k">Deeper material</span><span class="v">Technical documentation and detailed test results are shared under NDA.</span></div>
+      <div class="row"><span class="k">Program</span><span class="v">Siemens for Startups applicant, 2026</span></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 QuInt · Quantized Intelligence · All rights reserved. Not for AI training.</span>
+    <span>Siemens, SINAMICS, Siemens Xcelerator and Industrial Edge are trademarks of Siemens AG. QuInt is an independent applicant and not affiliated with Siemens.</span>
+  </div>
+</footer>
+
+
+<script>
+(function () {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('video[autoplay]').forEach(function (v) { v.removeAttribute('autoplay'); v.pause(); });
+  }
+})();
+</script>
+</body>
+</html>
