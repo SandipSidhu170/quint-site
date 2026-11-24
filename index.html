@@ -198,6 +198,7 @@ section + section { border-top: 1px solid var(--line); }
 .stat .d { color: var(--ink-2); font-size: 0.9rem; }
 .proof-note { margin-top: 28px; font-size: 0.9rem; color: var(--ink-3); max-width: 70ch; }
 
+[hidden] { display: none !important; }
 /* siemens */
 .siemens-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(18px, 2.5vw, 28px); }
 @media (max-width: 860px) { .siemens-grid { grid-template-columns: 1fr; } }
@@ -249,7 +250,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <li><a href="#how">How it works</a></li>
       <li><a href="#live">See it</a></li>
       <li><a href="#product">Product</a></li>
-      <li><a href="#siemens">Siemens for Startups</a></li>
+      <li hidden><a href="#siemens">Siemens for Startups</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
     <a class="btn btn-primary cta" href="#contact">Contact</a>
@@ -507,7 +508,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   </div>
 </section>
 
-<section id="siemens">
+<section id="siemens" hidden>
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Siemens for Startups</span>
@@ -557,8 +558,8 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     <div class="panel contact-card">
       <div class="row"><span class="k">Founder</span><span class="v">Sandip Sidhu</span></div>
       <div class="row"><span class="k">Email</span><span class="v"><a href="mailto:hello@quantizedintelligence.ca">hello@quantizedintelligence.ca</a></span></div>
-      <div class="row"><span class="k">Deeper material</span><span class="v">Technical documentation and detailed test results are shared under NDA.</span></div>
-      <div class="row"><span class="k">Program</span><span class="v">Siemens for Startups applicant, 2026</span></div>
+      <div class="row" hidden><span class="k">Deeper material</span><span class="v">Technical documentation and detailed test results are shared under NDA.</span></div>
+      <div class="row" hidden><span class="k">Program</span><span class="v">Siemens for Startups applicant, 2026</span></div>
     </div>
   </div>
 </section>
@@ -568,7 +569,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 <footer>
   <div class="wrap">
     <span>© 2026 QuInt · Quantized Intelligence · All rights reserved. Not for AI training.</span>
-    <span>Siemens, SINAMICS, Siemens Xcelerator and Industrial Edge are trademarks of Siemens AG. QuInt is an independent applicant and not affiliated with Siemens.</span>
+    <span hidden>Siemens, SINAMICS, Siemens Xcelerator and Industrial Edge are trademarks of Siemens AG. QuInt is an independent applicant and not affiliated with Siemens.</span>
   </div>
 </footer>
 
